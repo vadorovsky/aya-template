@@ -1,3 +1,5 @@
+cargo-features = ["bindeps"]
+
 [package]
 name = "{{project-name}}"
 version = "0.1.0"
@@ -7,6 +9,7 @@ publish = false
 [dependencies]
 aya = { git = "https://github.com/aya-rs/aya", branch="main" }
 {{project-name}}-common = { path = "../{{project-name}}-common", features=["user"] }
+{{project-name}}-ebpf = { path = "../{{project-name}}-ebpf", artifact = "bin", target = "bpfel-unknown-none" }
 anyhow = "1.0.42"
 {% if program_type == "uprobe" %}libc = "0.2.102"{% endif %}
 log = "0.4"
