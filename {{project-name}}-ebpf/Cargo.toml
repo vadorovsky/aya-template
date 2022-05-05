@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-aya-bpf = { git = "https://github.com/aya-rs/aya", branch = "main" }
-aya-log-ebpf = { git = "https://github.com/aya-rs/aya-log", branch = "main" }
+aya-bpf = { git = "https://github.com/aya-rs/aya", rev = "cb57d10d25611a35b2cc34523d95b9f331470958" }
+aya-log-ebpf = { git = "https://github.com/aya-rs/aya-log", tag = "aya-log-v0.1.9" }
 {{ project-name }}-common = { path = "../{{ project-name }}-common" }
 
 [[bin]]
@@ -30,3 +30,6 @@ codegen-units = 1
 
 [workspace]
 members = []
+
+[patch.crates-io]
+aya = { git = "https://github.com/aya-rs/aya", rev = "cb57d10d25611a35b2cc34523d95b9f331470958" }
