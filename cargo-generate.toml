@@ -22,7 +22,8 @@ choices = [
     "cgroup_sockopt",
     "tracepoint",
     "lsm",
-    "tp_btf"
+    "tp_btf",
+    "perf_event"
 ]
 default = "xdp"
 

@@ -322,6 +322,25 @@ unsafe fn try_{{crate_name}}(ctx: SockoptContext) -> Result<i32, i32> {
     info!(&ctx, "{{sockopt_target}} called");
     Ok(0)
 }
+{%- when "perf_event" %}
+use aya_bpf::{
+    macros::perf_event,
+    programs::PerfEventContext,
+};
+use aya_log_ebpf::info;
+
+#[perf_event]
+pub fn {{crate_name}}(ctx: PerfEventContext) -> u32 {
+    match unsafe { try_{{crate_name}}(ctx) } {
+        Ok(ret) => ret,
+        Err(ret) => ret,
+    }
+}
+
+unsafe fn try_{{crate_name}}(ctx: PerfEventContext) -> Result<u32, u32> {
+    info!(&ctx, "perf event called");
+    Ok(0)
+}
 {%- endcase %}
 
 #[panic_handler]

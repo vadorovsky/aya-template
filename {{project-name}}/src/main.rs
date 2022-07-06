@@ -35,6 +35,13 @@ use aya::{programs::BtfTracePoint, Btf};
 use std::net::TcpStream;
 use std::os::unix::io::AsRawFd;
 use aya::programs::SocketFilter;
+{%- when "perf_event" -%}
+use aya::{
+    programs::perf_event::{
+        perf_sw_ids::PERF_COUNT_SW_CPU_CLOCK, PerfEvent, PerfTypeId, PerfEventScope, SamplePolicy
+    },
+    util::online_cpus,
+};
 {%- endcase %}
 use aya_log::BpfLogger;
 use clap::Parser;
@@ -159,6 +166,17 @@ async fn main() -> Result<(), anyhow::Error> {
     let cgroup = std::fs::File::open(opt.cgroup_path)?;
     program.load()?;
     program.attach(cgroup)?;
+    {%- when "perf_event" -%}
+    let program: &mut PerfEvent = bpf.program_mut("{{crate_name}}").unwrap().try_into()?;
+    program.load()?;
+    for cpu in online_cpus()? {
+        program.attach(
+            PerfTypeId::Software,
+            PERF_COUNT_SW_CPU_CLOCK as u64,
+            PerfEventScope::AllProcessesOneCpu { cpu },
+            SamplePolicy::Period(1000000),
+        )?;
+    }
     {%- endcase %}
 
     info!("Waiting for Ctrl-C...");
