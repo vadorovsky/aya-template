@@ -1,3 +1,4 @@
+{% assign program_types_with_opts = "xdp, classifier, sock_ops, cgroup_skb, cgroup_sysctl, cgroup_sockopt, uprobe, uretprobe" | split: ", " %}
 [package]
 name = "{{project-name}}"
 version = "0.1.0"
@@ -5,15 +6,15 @@ edition = "2021"
 publish = false
 
 [dependencies]
-aya = { version = ">=0.11", features=["async_tokio"] }
-aya-log = "0.1"
+
 {{project-name}}-common = { path = "../{{project-name}}-common", features=["user"] }
+
+aya = { version = ">=0.11", features = ["async_tokio"] }
+aya-log = "0.1"
 anyhow = "1.0.42"
-{% case program_type %}
-{%- when
-"xdp", "classifier", "sock_ops", "cgroup_skb", "cgroup_sysctl", "cgroup_sockopt", "uprobe", "uretprobe" -%}
+{% if program_types_with_opts contains program_type %}
 clap = { version = "4.0", features = ["derive"] }
-{%- endcase %}
+{% endif %}
 env_logger = "0.10"
 libc = "0.2"
 log = "0.4"

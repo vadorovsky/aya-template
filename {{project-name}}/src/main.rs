@@ -1,3 +1,4 @@
+{% assign program_types_with_opts = "xdp, classifier, sock_ops, cgroup_skb, cgroup_sysctl, cgroup_sockopt, uprobe, uretprobe" | split: ", " %}
 use aya::{include_bytes_aligned, Bpf};
 {% case program_type -%}
 {%- when "kprobe", "kretprobe" -%}
@@ -39,17 +40,13 @@ use aya::programs::SocketFilter;
 use aya::programs::RawTracePoint;
 {%- endcase %}
 use aya_log::BpfLogger;
-{% case program_type %}
-{%- when
-    "xdp", "classifier", "sock_ops", "cgroup_skb", "cgroup_sysctl", "cgroup_sockopt", "uprobe", "uretprobe" -%}
+{% if program_types_with_opts contains program_type %}
 use clap::Parser;
-{%- endcase %}
+{% endif %}
 use log::{info, warn};
 use tokio::signal;
 
-{% case program_type %}
-{%- when
-    "xdp", "classifier", "sock_ops", "cgroup_skb", "cgroup_sysctl", "cgroup_sockopt", "uprobe", "uretprobe" -%}
+{% if program_types_with_opts contains program_type %}
 #[derive(Debug, Parser)]
 struct Opt {
     {% if program_type == "xdp" or program_type == "classifier" -%}
@@ -63,16 +60,13 @@ struct Opt {
     pid: Option<i32>
     {%- endif %}
 }
-{%- endcase %}
+{% endif %}
 
 #[tokio::main]
 async fn main() -> Result<(), anyhow::Error> {
-    {% case program_type %}
-    {%- when
-        "xdp", "classifier", "sock_ops", "cgroup_skb", "cgroup_sysctl", "cgroup_sockopt", "uprobe", "uretprobe" -%}
+{% if program_types_with_opts contains program_type %}
     let opt = Opt::parse();
-
-    {%- endcase %}
+{% endif %}
 
     env_logger::init();
 
