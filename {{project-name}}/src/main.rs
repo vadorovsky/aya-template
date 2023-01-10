@@ -39,7 +39,11 @@ use aya::programs::SocketFilter;
 use aya::programs::RawTracePoint;
 {%- endcase %}
 use aya_log::BpfLogger;
+{% case program_type %}
+{%- when
+    "xdp", "classifier", "sock_ops", "cgroup_skb", "cgroup_sysctl", "cgroup_sockopt", "uprobe", "uretprobe" -%}
 use clap::Parser;
+{%- endcase %}
 use log::{info, warn};
 use tokio::signal;
 

@@ -9,13 +9,21 @@ aya = { version = ">=0.11", features=["async_tokio"] }
 aya-log = "0.1"
 {{project-name}}-common = { path = "../{{project-name}}-common", features=["user"] }
 anyhow = "1.0.42"
+{% case program_type %}
+{%- when
+"xdp", "classifier", "sock_ops", "cgroup_skb", "cgroup_sysctl", "cgroup_sockopt", "uprobe", "uretprobe" -%}
 clap = { version = "4.0", features = ["derive"] }
+{%- endcase %}
 env_logger = "0.10"
-{%- if program_type == "uprobe" %}
 libc = "0.2"
-{%- endif %}
 log = "0.4"
-tokio = { version = "1.23", features = ["macros", "rt", "rt-multi-thread", "net", "signal"] }
+tokio = { version = "1.24.1", features = [
+    "macros",
+    "rt",
+    "rt-multi-thread",
+    "net",
+    "signal",
+] }
 
 [[bin]]
 name = "{{project-name}}"
