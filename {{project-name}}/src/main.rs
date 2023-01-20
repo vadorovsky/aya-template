@@ -1,5 +1,3 @@
-{% assign program_types_with_opts = "xdp, classifier, sock_ops, cgroup_skb, cgroup_sysctl, cgroup_sockopt, uprobe, uretprobe" | split: ", " %}
-use aya::{include_bytes_aligned, Bpf};
 {% case program_type -%}
 {%- when "kprobe", "kretprobe" -%}
 use aya::programs::KProbe;
@@ -39,14 +37,15 @@ use aya::programs::SocketFilter;
 {%- when "raw_tracepoint" -%}
 use aya::programs::RawTracePoint;
 {%- endcase %}
+use aya::{include_bytes_aligned, Bpf};
 use aya_log::BpfLogger;
-{% if program_types_with_opts contains program_type %}
+{% if program_types_with_opts contains program_type -%}
 use clap::Parser;
-{% endif %}
+{% endif -%}
 use log::{info, warn};
 use tokio::signal;
 
-{% if program_types_with_opts contains program_type %}
+{% if program_types_with_opts contains program_type -%}
 #[derive(Debug, Parser)]
 struct Opt {
     {% if program_type == "xdp" or program_type == "classifier" -%}
@@ -60,14 +59,13 @@ struct Opt {
     pid: Option<i32>
     {%- endif %}
 }
-{% endif %}
+{% endif -%}
 
 #[tokio::main]
 async fn main() -> Result<(), anyhow::Error> {
-{% if program_types_with_opts contains program_type %}
+{%- if program_types_with_opts contains program_type %}
     let opt = Opt::parse();
 {% endif %}
-
     env_logger::init();
 
     // This will include your eBPF object file as raw bytes at compile-time and load it at
