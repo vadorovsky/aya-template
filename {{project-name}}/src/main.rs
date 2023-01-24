@@ -59,7 +59,7 @@ struct Opt {
     pid: Option<i32>
     {%- endif %}
 }
-{% endif -%}
+{%- endif %}
 
 #[tokio::main]
 async fn main() -> Result<(), anyhow::Error> {
