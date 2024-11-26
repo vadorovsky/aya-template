@@ -20,6 +20,14 @@ cargo run --release --config 'target."cfg(all())".runner="sudo -E"'
 Cargo build scripts are used to automatically build the eBPF correctly and include it in the
 program.
 
+If your program generates logs, consider setting the log level using the
+`RUST_LOG` environment variable to ensure your messages are visible. For
+example:
+
+```shell
+RUST_LOG=info cargo run --release --config 'target."cfg(all())".runner="sudo -E"'
+```
+
 ## Cross-compiling on macOS
 
 Cross compilation should work on both Intel and Apple Silicon Macs.
